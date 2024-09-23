@@ -3,9 +3,14 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+import static guru.qa.niffler.utils.templates.Messages.*;
+
+@ExtendWith(BrowserExtension.class)
 public class RegisterWebTest {
     Faker faker = new Faker();
     private static final Config CFG = Config.getInstance();
@@ -13,7 +18,6 @@ public class RegisterWebTest {
 
     @Test
     void shoudRegisterNewUser() {
-        final String messageSuccessRegister = "Congratulations! You've registered!";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickRegisterButton()
@@ -21,14 +25,12 @@ public class RegisterWebTest {
                 .setPassword(pass)
                 .setPasswordSubmit(pass)
                 .clickSubmitButton()
-                .shouldSuccessRegister(messageSuccessRegister);
+                .shouldSuccessRegister(SUCCES_REGISTER.getMessage());
     }
 
     @Test
     void shouldNotRegisterUserWithExistingUsername() {
         String name = faker.name().username();
-        final String messageSuccessRegister = "Congratulations! You've registered!";
-        final String messageErrorExistRegister = "Username `" + name + "` already exists";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickRegisterButton()
@@ -36,14 +38,14 @@ public class RegisterWebTest {
                 .setPassword(pass)
                 .setPasswordSubmit(pass)
                 .clickSubmitButton()
-                .shouldSuccessRegister(messageSuccessRegister)
+                .shouldSuccessRegister(SUCCES_REGISTER.getMessage())
                 .clickSignInButton()
                 .clickRegisterButton()
                 .setUsername(name)
                 .setPassword(pass)
                 .setPasswordSubmit(pass)
                 .clickSubmitButton()
-                .shouldErrorRegister(messageErrorExistRegister);
+                .shouldErrorRegister(USERNAME.getMessage() + name + ALREADY_EXIST.getMessage());
     }
 
     @Test

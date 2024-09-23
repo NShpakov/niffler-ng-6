@@ -12,6 +12,7 @@ public class ProfilePage {
     private final ElementsCollection categoryList = $$(".MuiChip-root");
     private final SelenideElement activeCategoryList = $(".MuiChip-filled");
     private final SelenideElement successMessage = $(".MuiTypography-body1");
+    private final SelenideElement showArchivedBtn = $(".MuiSwitch-switchBase");
     private final SelenideElement showArchivedButton = $x("//title");
     private final SelenideElement avatar = $("#image__input").parent().$("img");
     private final SelenideElement userName = $("#username");
@@ -35,7 +36,7 @@ public class ProfilePage {
         return this;
     }
 
-    public ProfilePage shouldForCategoryName(String categoryName) {
+    public ProfilePage shouldBeDisplayedForCategoryName(String categoryName) {
         categoryList.filterBy(text(categoryName))
                 .first()
                 .shouldHave(text(categoryName));
@@ -79,7 +80,7 @@ public class ProfilePage {
     }
 
     public ProfilePage clickShowArchivedButton() {
-        showArchivedButton.click();
+        showArchivedBtn.click();
         return this;
     }
 

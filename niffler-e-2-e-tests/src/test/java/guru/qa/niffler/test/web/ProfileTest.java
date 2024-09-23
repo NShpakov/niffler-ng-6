@@ -19,30 +19,33 @@ public class ProfileTest {
 
     @Category(
             username = "duck",
-            name = "Категория11",
+            name = "Категория126",
             archived = false)
     @Test
     void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login("duck", "12345678");
-        mainPage.clickProfileButton();
-        profilePage.clickArchiveButton()
+        mainPage.clickMenuButton()
+                .goToProfilePage()
+                .clickArchiveButton()
                 .clickArchiveButtonSubmit()
                 .shouldBeVisibleSuccessMessage()
                 .clickShowArchivedButton()
-                .shouldForCategoryName(category.name());
+                .shouldBeDisplayedForCategoryName(category.name());
+        ;
     }
 
     @Category(
             username = "duck",
-            name = "Категория12",
+            name = "Категория1222",
             archived = false)
     @Test
-    void activeCategoryShouldPresentInCategoriesList(CategoryJson category)  {
+    void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login("duck", "12345678");
 
-        mainPage.clickProfileButton();
-        profilePage.shouldActiveCategoryList(category.name());
-
+        mainPage.clickMenuButton()
+                .goToProfilePage()
+                .shouldActiveCategoryList(category.name());
+    }
 }

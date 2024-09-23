@@ -2,61 +2,59 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.UserType;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.EMPTY;
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.WITH_FRIEND;
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.WITH_INCOME_REQUEST;
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.WITH_OUTCOME_REQUEST;
+import static guru.qa.niffler.jupiter.annotation.UserType.Type.*;
 
-@ExtendWith(BrowserExtension.class)
+
+@ExtendWith({
+        UsersQueueExtension.class,
+        BrowserExtension.class
+})
 public class FriendsWebTest {
+    private static final Config CFG = Config.getInstance();
 
-  private static final Config CFG = Config.getInstance();
+    @Test
+    void friendShoudBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user ) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.password())
+                .shouldPresentHistoryHeader()
+                .openFriendsByUrl()
+                .checkThatFriendIsExist(user.friend());
+    }
 
-  @Test
-  @ExtendWith(UsersQueueExtension.class)
-  void friendShouldBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin(user.username(), user.password())
-        .checkThatPageLoaded()
-        .friendsPage()
-        .checkExistingFriends(user.friend());
-  }
+    @Test
+    void friendsTableShoudBeEmptyForNewUser(@UserType(EMPTY) StaticUser user) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.password())
+                .shouldPresentHistoryHeader()
+                .openFriendsByUrl()
+                .emptyFriendsMsgShouldAppear();
 
-  @Test
-  @ExtendWith(UsersQueueExtension.class)
-  void friendsTableShouldBeEmptyForNewUser(@UserType(EMPTY) StaticUser user) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin(user.username(), user.password())
-        .checkThatPageLoaded()
-        .friendsPage()
-        .checkNoExistingFriends();
-  }
+    }
 
-  @Test
-  @ExtendWith(UsersQueueExtension.class)
-  void incomeInvitationBePresentInFriendsTable(@UserType(WITH_INCOME_REQUEST) StaticUser user) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin(user.username(), user.password())
-        .checkThatPageLoaded()
-        .friendsPage()
-        .checkExistingInvitations(user.income());
-  }
+    @Test
+    void incomeInvitationBePresentInFriendsTable(@UserType(WITH_INCOME_REQUEST) StaticUser user) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.password())
+                .shouldPresentHistoryHeader()
+                .openFriendsByUrl()
+                .checkThatIncomingRequestIsPresent(user.income());
+    }
 
-  @Test
-  @ExtendWith(UsersQueueExtension.class)
-  void outcomeInvitationBePresentInAllPeoplesTable(@UserType(WITH_OUTCOME_REQUEST) StaticUser user) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin(user.username(), user.password())
-        .checkThatPageLoaded()
-        .allPeoplesPage()
-        .checkInvitationSentToUser(user.outcome());
-  }
+    @Test
+    void outcomeInvitationBePresentInFriendsTable(@UserType(WITH_OUTCOME_REQUEST) StaticUser user){
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.password())
+                .shouldPresentHistoryHeader()
+                .openAllPeopleByUrl()
+                .checkThatOutcomeRequestIsPresent(user.outcome());
+
+    }
 }
