@@ -9,6 +9,8 @@ import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static guru.qa.niffler.jupiter.errors.Messages.BAD_CREDENTIALS;
+
 @ExtendWith(BrowserExtension.class)
 public class LoginWebTest {
 
@@ -17,12 +19,12 @@ public class LoginWebTest {
 
     @Test
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
-        final String errorTitle = "Bad credentials";
+
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login("duck", "123");
 
-        new LoginPage().shouldErrorForm(errorTitle);
+        new LoginPage().shouldBeDisplayedErrorForm(BAD_CREDENTIALS.getMessage());
     }
 
     @Test
@@ -33,7 +35,7 @@ public class LoginWebTest {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login("niko", "12345678");
 
-        mainPage.shouldStatisticsHeader(statisticsHeader)
+        mainPage.shouldBeDispayedStatisticsHeader(statisticsHeader)
                 .shouldHistoryHeader(historyHeader);
     }
 }
