@@ -1,4 +1,4 @@
-package guru.qa.niffler.jupiter.errors;
+package guru.qa.niffler.utils.templates;
 
 public enum Messages {
     BAD_CREDENTIALS("Bad credentials"),

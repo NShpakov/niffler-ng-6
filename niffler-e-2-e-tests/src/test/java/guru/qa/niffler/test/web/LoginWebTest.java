@@ -9,7 +9,7 @@ import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static guru.qa.niffler.jupiter.errors.Messages.BAD_CREDENTIALS;
+import static guru.qa.niffler.utils.templates.Messages.BAD_CREDENTIALS;
 
 @ExtendWith(BrowserExtension.class)
 public class LoginWebTest {

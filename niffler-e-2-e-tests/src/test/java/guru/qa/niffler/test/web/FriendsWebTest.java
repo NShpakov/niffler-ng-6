@@ -5,6 +5,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.UserType;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
+import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,13 +13,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static guru.qa.niffler.jupiter.annotation.UserType.Type.*;
 
 
-@ExtendWith(UsersQueueExtension.class)
-@ExtendWith(BrowserExtension.class)
+@ExtendWith({
+        UsersQueueExtension.class,
+        BrowserExtension.class
+})
 public class FriendsWebTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
-    void friendShoudBePresentInFriendsTable(@UserType(WITH_FRIEND) UsersQueueExtension.StaticUser user) {
+    void friendShoudBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user ) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.password())
                 .shouldPresentHistoryHeader()
@@ -27,7 +30,7 @@ public class FriendsWebTest {
     }
 
     @Test
-    void friendsTableShoudBeEmptyForNewUser(@UserType(EMPTY) UsersQueueExtension.StaticUser user) {
+    void friendsTableShoudBeEmptyForNewUser(@UserType(EMPTY) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.password())
                 .shouldPresentHistoryHeader()
@@ -37,7 +40,7 @@ public class FriendsWebTest {
     }
 
     @Test
-    void incomeInvitationBePresentInFriendsTable(@UserType(WITH_INCOME_REQUEST) UsersQueueExtension.StaticUser user) {
+    void incomeInvitationBePresentInFriendsTable(@UserType(WITH_INCOME_REQUEST) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.password())
                 .shouldPresentHistoryHeader()
@@ -46,7 +49,7 @@ public class FriendsWebTest {
     }
 
     @Test
-    void outcomeInvitationBePresentInFriendsTable(@UserType(WITH_OUTCOME_REQUEST) UsersQueueExtension.StaticUser user){
+    void outcomeInvitationBePresentInFriendsTable(@UserType(WITH_OUTCOME_REQUEST) StaticUser user){
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.password())
                 .shouldPresentHistoryHeader()

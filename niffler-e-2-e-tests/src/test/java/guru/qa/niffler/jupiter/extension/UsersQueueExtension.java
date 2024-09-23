@@ -22,7 +22,7 @@ public class UsersQueueExtension implements
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UsersQueueExtension.class);
 
-    public record StaticUser(String username,
+    public static record StaticUser(String username,
                              String password,
                              String friend,
                              String income,

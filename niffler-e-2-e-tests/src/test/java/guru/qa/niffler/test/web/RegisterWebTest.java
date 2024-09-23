@@ -8,7 +8,7 @@ import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static guru.qa.niffler.jupiter.errors.Messages.*;
+import static guru.qa.niffler.utils.templates.Messages.*;
 
 @ExtendWith(BrowserExtension.class)
 public class RegisterWebTest {
