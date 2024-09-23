@@ -24,7 +24,7 @@ public class LoginPage {
         return new RegisterPage();
     }
 
-    public void shouldErrorForm(String value) {
+    public void shouldBeDisplayedErrorForm(String value) {
         title.shouldHave(text(value));
     }
 }
