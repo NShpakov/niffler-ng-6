@@ -57,8 +57,7 @@ public class SpendDaoJdbc implements SpendDao {
     public List<SpendEntity> findAllByUserName(String userName) {
         List<SpendEntity> spends = new ArrayList<>();
         try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM spend WHERE username = ?");
-            {
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM spend WHERE username = ?")) {
                 ps.setString(1, userName);
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
@@ -66,7 +65,7 @@ public class SpendDaoJdbc implements SpendDao {
                         spend.setId(rs.getObject("id", UUID.class));
                         spend.setUsername(rs.getString("username"));
                         spend.setSpendDate(rs.getDate("spend_date"));
-                        spend.setCurrency(rs.getObject("currency", CurrencyValues.class));
+                        spend.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
                         spend.setAmount(rs.getDouble("amount"));
                         spend.setDescription(rs.getString("description"));
                         spend.setCategory(rs.getObject("category_id", CategoryEntity.class));
@@ -82,14 +81,15 @@ public class SpendDaoJdbc implements SpendDao {
 
     @Override
     public void deleteSpend(SpendEntity spend) {
-        try (Connection connection = Databases.connection(CFG.spendJdbcUrl());
-             PreparedStatement ps = connection.prepareStatement(
-                     "DELETE FROM spend WHERE id = ?"
-             )) {
+        try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
+            try (PreparedStatement ps = connection.prepareStatement(
+                    "DELETE FROM spend WHERE id = ?"
+            )) {
 
-            ps.setObject(1, spend.getId());
-            ps.executeUpdate();
+                ps.setObject(1, spend.getId());
+                ps.executeUpdate();
 
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

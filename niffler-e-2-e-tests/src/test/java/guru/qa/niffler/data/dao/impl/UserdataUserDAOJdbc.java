@@ -15,11 +15,9 @@ public class UserdataUserDAOJdbc implements UserDao {
 
     @Override
     public UserEntity createUser(UserEntity user) {
-        try {
-            Connection connection = connection = Databases.connection(CFG.userdataJdbcUrl());
+        try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
 
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO user (username,currency,firstName,surname,photo,photo_small,full_name) " + "VALUES ( ?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO user (username,currency,firstName,surname,photo,photo_small,full_name) " + "VALUES ( ?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
                 preparedStatement.setString(1, user.getUsername());
                 preparedStatement.setObject(2, user.getCurrency());
                 preparedStatement.setString(3, user.getFirstname());
@@ -52,10 +50,8 @@ public class UserdataUserDAOJdbc implements UserDao {
 
     @Override
     public Optional<UserEntity> findById(UUID id) {
-        try {
-            Connection connection = Databases.connection(CFG.userdataJdbcUrl());
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM user WHERE id =?");
-            {
+        try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM user WHERE id =?")) {
                 preparedStatement.setObject(1, id);
                 preparedStatement.execute();
                 try (ResultSet rs = preparedStatement.getResultSet()) {
@@ -63,7 +59,7 @@ public class UserdataUserDAOJdbc implements UserDao {
                         UserEntity user = new UserEntity();
                         user.setId(rs.getObject("id", UUID.class));
                         user.setUsername(rs.getString("username"));
-                        user.setCurrency(rs.getObject("currency", CurrencyValues.class));
+                        user.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
                         user.setFirstname(rs.getString("firstname"));
                         user.setSurname(rs.getString("surname"));
                         user.setPhoto(rs.getBytes("photo"));
@@ -83,23 +79,24 @@ public class UserdataUserDAOJdbc implements UserDao {
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM user WHERE username =?");
-            preparedStatement.setObject(1, username);
+            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM user WHERE username =?")) {
+                preparedStatement.setObject(1, username);
 
-            try (ResultSet rs = preparedStatement.executeQuery()) {
-                if (rs.next()) {
-                    UserEntity user = new UserEntity();
-                    user.setId(rs.getObject("id", UUID.class));
-                    user.setUsername(rs.getString("username"));
-                    user.setCurrency(rs.getObject("currency", CurrencyValues.class));
-                    user.setFirstname(rs.getString("firstname"));
-                    user.setSurname(rs.getString("surname"));
-                    user.setPhoto(rs.getBytes("photo"));
-                    user.setPhotoSmall(rs.getBytes("photo_small"));
-                    user.setFullname(rs.getString("full_name"));
-                    return Optional.of(user);
-                } else {
-                    return Optional.empty();
+                try (ResultSet rs = preparedStatement.executeQuery()) {
+                    if (rs.next()) {
+                        UserEntity user = new UserEntity();
+                        user.setId(rs.getObject("id", UUID.class));
+                        user.setUsername(rs.getString("username"));
+                        user.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                        user.setFirstname(rs.getString("firstname"));
+                        user.setSurname(rs.getString("surname"));
+                        user.setPhoto(rs.getBytes("photo"));
+                        user.setPhotoSmall(rs.getBytes("photo_small"));
+                        user.setFullname(rs.getString("full_name"));
+                        return Optional.of(user);
+                    } else {
+                        return Optional.empty();
+                    }
                 }
             }
         } catch (SQLException e) {
