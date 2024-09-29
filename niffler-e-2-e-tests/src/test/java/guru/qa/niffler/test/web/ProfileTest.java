@@ -3,22 +3,23 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
-import guru.qa.niffler.jupiter.extension.BrowserExtension;
+import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.page.ProfilePage;
+import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(BrowserExtension.class)
+@WebTest
 public class ProfileTest {
+    private static final Config CFG = Config.getInstance();
+    private final MainPage mainPage = new MainPage();
 
-  private static final Config CFG = Config.getInstance();
 
-    @Category(
+    @User(
             username = "duck",
-            name = "Категория126",
-            archived = false)
+            categories =@Category (
+                    archived = false))
     @Test
     void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
@@ -33,17 +34,17 @@ public class ProfileTest {
         ;
     }
 
-  @Category(
-      username = "duck",
-      archived = false
-  )
-  @Test
-  void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin("duck", "12345")
-        .checkThatPageLoaded();
+    @User(
+            username = "duck",
+            categories =@Category (
+                    archived = false))
+    @Test
+    void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login("duck", "12345678");
 
-    Selenide.open(CFG.frontUrl() + "profile", ProfilePage.class)
-        .checkCategoryExists(category.name());
-  }
+        mainPage.clickMenuButton()
+                .goToProfilePage()
+                .shouldActiveCategoryList(category.name());
+    }
 }
