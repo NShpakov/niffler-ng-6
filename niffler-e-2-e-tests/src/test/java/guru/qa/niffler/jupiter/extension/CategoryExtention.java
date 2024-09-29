@@ -7,7 +7,7 @@ import guru.qa.niffler.service.SpendDbClient;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import static guru.qa.niffler.utils.RandomDataUtils.randomName;
+import static guru.qa.niffler.utils.faker.RandomDataUtils.randomName;
 
 
 public class CategoryExtention implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
