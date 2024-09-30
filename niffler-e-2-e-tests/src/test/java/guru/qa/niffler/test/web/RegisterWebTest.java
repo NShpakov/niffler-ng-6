@@ -1,18 +1,20 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import static guru.qa.niffler.utils.faker.RandomDataUtils.randomPassword;
 import static guru.qa.niffler.utils.templates.Messages.*;
 
-@WebTest
+@ExtendWith(BrowserExtension.class)
 public class RegisterWebTest {
+    Faker faker = new Faker();
     private static final Config CFG = Config.getInstance();
-    String pass = randomPassword();
+    String pass = faker.internet().password(3, 8);
 
     @Test
     void shoudRegisterNewUser() {
