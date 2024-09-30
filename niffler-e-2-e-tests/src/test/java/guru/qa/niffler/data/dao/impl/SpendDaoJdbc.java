@@ -68,7 +68,7 @@ public class SpendDaoJdbc implements SpendDao {
                         spend.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
                         spend.setAmount(rs.getDouble("amount"));
                         spend.setDescription(rs.getString("description"));
-                        spend.setCategory(rs.getObject("category_id", CategoryEntity.class));
+                        spend.setCategory(new CategoryDaoJdbc().findCategoryById(rs.getObject("category_id", UUID.class)).orElseThrow());
                         spends.add(spend);
                     }
                 }
