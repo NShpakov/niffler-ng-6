@@ -49,8 +49,8 @@ public class SpendingExtension implements BeforeEachCallback, AfterEachCallback,
     public void afterEach(ExtensionContext context) throws Exception {
         SpendJson spend = context.getStore(NAMESPACE).get(context.getUniqueId(), SpendJson.class);
         if (spend != null) {
-            spendDbClient.deleteSpend(spend);
-            spendDbClient.deleteCategory(spend.category());
+      //      spendDbClient.deleteSpend(spend);
+    //        spendDbClient.deleteCategory(spend.category());
         }
     }
 

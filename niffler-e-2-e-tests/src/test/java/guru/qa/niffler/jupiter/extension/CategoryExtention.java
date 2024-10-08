@@ -26,8 +26,8 @@ public class CategoryExtention implements BeforeEachCallback, AfterEachCallback,
                                 randomName,
                                 ua.username(),
                                 ac.archived());
-                        CategoryJson createdCategory = spendDbClient.createCategory(category);
-                        context.getStore(NAMESPACE).put(context.getUniqueId(), createdCategory);
+                     //   CategoryJson createdCategory = spendDbClient.createSpend(category);
+                   //     context.getStore(NAMESPACE).put(context.getUniqueId(), createdCategory);
                     }
                 });
     }
@@ -36,7 +36,7 @@ public class CategoryExtention implements BeforeEachCallback, AfterEachCallback,
     public void afterEach(ExtensionContext context) throws Exception {
         CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
         if (category != null) {
-            spendDbClient.deleteCategory(category);
+          //  spendDbClient.deleteCategory(category);
         }
     }
 

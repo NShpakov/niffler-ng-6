@@ -2,6 +2,7 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.data.dao.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
+import guru.qa.niffler.model.CurrencyValues;
 
 import java.sql.*;
 import java.util.ArrayList;
