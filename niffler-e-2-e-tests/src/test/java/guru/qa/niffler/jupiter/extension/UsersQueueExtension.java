@@ -23,10 +23,10 @@ public class UsersQueueExtension implements
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UsersQueueExtension.class);
 
     public static record StaticUser(String username,
-                             String password,
-                             String friend,
-                             String income,
-                             String outcome) {
+                                    String password,
+                                    String friend,
+                                    String income,
+                                    String outcome) {
     }
 
     private static final Queue<StaticUser> EMPTY_USERS = new ConcurrentLinkedQueue<>();
