@@ -6,39 +6,57 @@ import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public class MainPage {
+    private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
+    private final SelenideElement statistics = $("#stat");
+    private final SelenideElement spendings = $("#spendings");
+    private final SelenideElement menuButton = $("button[aria-label='Menu']");
+    private final ElementsCollection menuButtons = $$("li[role='menuitem']");
+    private final SelenideElement searchInput = $("input[placeholder='Search']");
 
-  private final SelenideElement header = $("#root header");
-  private final SelenideElement headerMenu = $("ul[role='menu']");
-  private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
-  private final SelenideElement statComponent = $("#stat");
-  private final SelenideElement spendingTable = $("#spendings");
+    public EditSpendingPage editSpending(String spendingDescription) {
+        searchSpending(spendingDescription);
+        tableRows.find(text(spendingDescription)).$$("td").get(5).click();
+        return new EditSpendingPage();
+    }
 
-  public FriendsPage friendsPage() {
-    header.$("button").click();
-    headerMenu.$$("li").find(text("Friends")).click();
-    return new FriendsPage();
-  }
+    public void checkThatTableContainsSpending(String spendingDescription) {
+        searchSpending(spendingDescription);
+        tableRows.find(text(spendingDescription)).should(visible);
+    }
 
-  public PeoplePage allPeoplesPage() {
-    header.$("button").click();
-    headerMenu.$$("li").find(text("All People")).click();
-    return new PeoplePage();
-  }
+    public MainPage checkThatPageLoaded() {
+        statistics.should(visible).shouldHave(text("Statistics"));
+        spendings.should(visible).shouldHave(text("History of Spendings"));
+        return this;
+    }
 
-  public EditSpendingPage editSpending(String spendingDescription) {
-    tableRows.find(text(spendingDescription)).$$("td").get(5).click();
-    return new EditSpendingPage();
-  }
+    public void verifyMainComponentsIsVisible() {
+        statistics.shouldBe(visible);
+        spendings.shouldBe(visible);
+    }
 
-  public void checkThatTableContainsSpending(String spendingDescription) {
-    tableRows.find(text(spendingDescription)).should(visible);
-  }
+    public ProfilePage openProfilePage() {
+        menuButton.click();
+        menuButtons.first().click();
+        return new ProfilePage();
+    }
 
-  public MainPage checkThatPageLoaded() {
-    statComponent.should(visible).shouldHave(text("Statistics"));
-    spendingTable.should(visible).shouldHave(text("History of Spendings"));
-    return this;
-  }
+    public PeoplePage openFriends() {
+        menuButton.click();
+        menuButtons.findBy(text("Friends")).click();
+        return new PeoplePage();
+    }
+
+    public PeoplePage openAllPeople() {
+        menuButton.click();
+        menuButtons.findBy(text("All people")).click();
+        return new PeoplePage();
+    }
+
+    public void searchSpending(String spendingDescription) {
+        searchInput.setValue(spendingDescription).pressEnter();
+    }
 }
